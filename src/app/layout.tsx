@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/app/provider/theme-provider";
 import ReactQueryProvider from "./provider/queryStore.provider";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import Header from "./components/header";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -39,7 +40,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <NuqsAdapter>{children}</NuqsAdapter>
+            <NuqsAdapter>
+              <Header />
+              {children}
+            </NuqsAdapter>
           </ThemeProvider>
           <Toaster />
         </ReactQueryProvider>

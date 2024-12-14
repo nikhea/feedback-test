@@ -1,21 +1,14 @@
 "use client";
-import // useEffect,
-// useState,
-"react";
-import {
-  // QueryClient,
-  QueryClientProvider,
-  // focusManager,
-} from "@tanstack/react-query";
+import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { getQueryClient } from "../../hooks/getQueryClient";
 
 export default function ReactQueryProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const queryClient = getQueryClient();
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -23,6 +16,9 @@ export default function ReactQueryProvider({
     </QueryClientProvider>
   );
 }
+
+// const [queryClient] = useState(() => new QueryClient());
+// focusManager
 
 // useEffect(() => {
 //   focusManager.setEventListener((handleFocus) => {
@@ -41,4 +37,3 @@ export default function ReactQueryProvider({
 //     };
 //   });
 // });
-// const [queryClient] = useState(() => new QueryClient());

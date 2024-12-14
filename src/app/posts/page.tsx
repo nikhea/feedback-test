@@ -1,13 +1,15 @@
 import React from "react";
 import PostItem from "../../components/ui/postItem";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { getPosts } from "../actions/fetchPosts";
-import { getQueryClient } from "../../hooks/getQueryClient";
+import Filiter from "./filiter";
 
-const page = async () => {
-  // const queryClient = new QueryClient();
-  const queryClient = getQueryClient();
-
+const Page = async () => {
+  const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["posts"],
     queryFn: getPosts,
@@ -15,9 +17,10 @@ const page = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <Filiter />
       <PostItem />
     </HydrationBoundary>
   );
 };
 
-export default page;
+export default Page;

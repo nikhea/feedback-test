@@ -4,11 +4,11 @@ import { cache } from "react";
 
 const options = {
   queries: {
-    //     refetchOnMount: false,
-    //     refetchOnWindowFocus: false,
-    //     refetchOnReconnect: false,
-    //     retry: false,
-    staleTime: 60 * 1000,
+    // refetchOnMount: false,
+    // refetchOnWindowFocus: false,
+    // refetchOnReconnect: false,
+    // retry: false,
+    // staleTime: 60 * 1000,
   },
 };
 
