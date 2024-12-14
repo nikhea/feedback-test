@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { jwtVerify } from "jose";
+import { JWTExpired } from "jose/errors";
 
-export function authMiddleware(request: NextRequest) {
+const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET_BUFFER = new TextEncoder().encode(JWT_SECRET);
+export async function authMiddleware(
+  request: NextRequest
+): Promise<NextResponse> {
+  const token = request.cookies.get("auth_token");
+
   try {
-    const token = request.cookies.get("auth_token");
-
     if (!token) {
       const currentPath = request.nextUrl.pathname;
 
@@ -13,9 +19,27 @@ export function authMiddleware(request: NextRequest) {
 
       return NextResponse.redirect(loginUrl);
     }
+
+    const tokenValue = token.value;
+
+    const { payload } = await jwtVerify(tokenValue, JWT_SECRET_BUFFER);
+
+    if (payload.exp && Date.now() >= payload.exp * 1000) {
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      response.cookies.delete("auth_token");
+      return response;
+    }
     return NextResponse.next();
-  } catch (error: unknown) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: unknown | any) {
     console.error("Error in auth middleware:", error);
+
+    if (error instanceof JWTExpired) {
+      // console.error("Token has expired:", error.payload);
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      response.cookies.delete("auth_token");
+      return response;
+    }
 
     const response = NextResponse.redirect(new URL("/login", request.url));
     response.cookies.delete("auth_token");

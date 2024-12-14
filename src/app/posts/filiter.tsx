@@ -7,7 +7,7 @@ import {
   //   parseAsStringLiteral,
   parseAsInteger,
 } from "nuqs";
-import { cleanObject } from "@/util/cleanObject";
+import { cleanObject } from "@/utils/cleanObject";
 
 const Filiter = () => {
   const [filters] = useQueryStates({

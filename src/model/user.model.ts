@@ -2,8 +2,8 @@ import mongoose, { Schema, Model } from "mongoose";
 
 export interface IUser {
   _id?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
   email: string;
   username: string;
   password: string;

@@ -2,12 +2,11 @@
 import { loginAction } from "@/app/actions/auth/LogIn.action";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// import { useCookie } from "react-use";
 import { useQueryState } from "nuqs";
-
+import { useQueryClient } from "@tanstack/react-query";
 export default function Login() {
-  // const [authToken, updateCookie] = useCookie("auth_token");
   const [name] = useQueryState("from");
+  const queryClient = useQueryClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,23 +16,21 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       const data = await loginAction({ email, password });
-      console.log(data);
-
-      if (data.email) {
-        // updateCookie("123456");
+      if (data.success === true) {
         const redirectTo = name || "/";
         router.push(redirectTo);
+        router.refresh();
+        await queryClient.invalidateQueries({
+          queryKey: ["authenticated-user"],
+        });
       }
     } catch (err) {
       console.log(err);
       setError(`${err}`);
     }
   };
-  // password  frontlimitedevent442
   return (
     <div>
-      {/* <p>Cookie Value: {authToken || "No cookie set"}</p> */}
-
       <h1>Login</h1>
       <input
         type="email"
@@ -52,6 +49,8 @@ export default function Login() {
     </div>
   );
 }
+
+// password  frontlimitedevent442
 
 // const handleLogin = async () => {
 //   try {

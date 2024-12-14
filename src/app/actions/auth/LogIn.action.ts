@@ -1,12 +1,13 @@
 "use server";
-
+import { connectDB } from "@/db/mongoDB";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 import bcrypt from "bcrypt";
 import UserModel, { IUser } from "@/model/user.model";
-import { connectDB } from "@/db/mongoDB";
+import { handleAPIResponse, APIResponse } from "@/utils/APIHandleResponse.util";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET_BUFFER = new TextEncoder().encode(JWT_SECRET);
 
 export interface ILogInActionForm {
   email: string;
@@ -14,7 +15,7 @@ export interface ILogInActionForm {
 }
 export async function loginAction(
   data: ILogInActionForm
-): Promise<Partial<IUser>> {
+): Promise<APIResponse> {
   const { email, password } = data;
 
   try {
@@ -22,17 +23,22 @@ export async function loginAction(
 
     const user = await UserModel.findOne({ email });
     if (!user) {
-      throw new Error("User not found");
+      return handleAPIResponse(false, 404, "User not found", null, [
+        "User with this email does not exist.",
+      ]);
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw new Error("Invalid credentials");
+      return handleAPIResponse(false, 401, "Invalid credentials", null, [
+        "Incorrect email or password.",
+      ]);
     }
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = await new SignJWT({ userId: user._id.toString() })
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime("1h")
+      .sign(JWT_SECRET_BUFFER);
 
     const cookieStore = await cookies();
 
@@ -45,16 +51,22 @@ export async function loginAction(
     });
     const plainUser = user.toObject();
 
-    const data: Partial<IUser> = {
+    const responseData: Partial<IUser> = {
       _id: plainUser._id.toString(),
       email: plainUser.email,
       is_deleted: false,
       username: plainUser.username,
     };
 
-    return data;
+    return handleAPIResponse(true, 200, "Login successful", responseData);
   } catch (error) {
     console.error("Login error:", error);
-    throw error;
+    return handleAPIResponse(
+      false,
+      500,
+      "An error occurred during login",
+      null,
+      [error || "Internal server error"]
+    );
   }
 }

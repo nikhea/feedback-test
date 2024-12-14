@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useMemo, useState } from "react";
 import { useQueryStates } from "nuqs";
-import { cleanObject } from "@/util/cleanObject";
+import { cleanObject } from "@/utils/cleanObject";
 
 import { useDebounce } from "react-use";
 

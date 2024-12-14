@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { capitalizeWord } from "@/util/cleanObject";
+import { capitalizeWord } from "@/utils/cleanObject";
 
 type SelectFilterProps = {
   id: string;

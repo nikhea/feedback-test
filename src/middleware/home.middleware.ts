@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const homeMiddlewareProtectedRoutes = ["/login", "/signup", "/register"];
 
-export function HomeMiddleware(request: NextRequest) {
+export async function HomeMiddleware(
+  request: NextRequest
+): Promise<NextResponse> {
   try {
     const token = request.cookies.get("auth_token");
     if (token) {

@@ -3,7 +3,7 @@ import axiosBase from "@/server/axiosIntances";
 export async function getPosts() {
   try {
     const posts = await axiosBase.get("/posts");
-    return posts.data;
+    return posts.data || [];
   } catch (error: unknown) {
     console.error(error);
   }

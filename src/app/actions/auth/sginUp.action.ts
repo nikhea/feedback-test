@@ -3,6 +3,7 @@
 import bcrypt from "bcrypt";
 import UserModel, { IUser } from "@/model/user.model";
 import { connectDB } from "@/db/mongoDB";
+import { createResponse, APIResponse } from "@/utils/APIHandleResponse.util";
 
 export interface ISignUpActionForm {
   email: string;
@@ -11,13 +12,13 @@ export interface ISignUpActionForm {
 }
 export async function signUpAction(
   data: ISignUpActionForm
-): Promise<Partial<IUser>> {
+): Promise<APIResponse> {
   const { email, password, username } = data;
   try {
     await connectDB();
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
-      throw new Error("User already exists");
+      return createResponse(false, 409, "User already exists");
     }
 
     const saltRounds = 10;
@@ -40,9 +41,11 @@ export async function signUpAction(
       username: plainUser.username,
     };
 
-    return data;
+    return createResponse(true, 201, "User registered successfully", data);
   } catch (error) {
     console.error("SignUp error:", error);
-    throw error;
+    return createResponse(false, 500, "Internal server error", null, [
+      { message: error },
+    ]);
   }
 }

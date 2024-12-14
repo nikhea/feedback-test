@@ -8,22 +8,26 @@ import {
   homeMiddlewareProtectedRoutes,
 } from "./middleware/home.middleware";
 import { isProtectedRoute } from "./middleware/isProtectedRoute";
-export function middleware(request: NextRequest): NextResponse | undefined {
+export async function middleware(
+  request: NextRequest
+): Promise<NextResponse | undefined> {
   const { pathname } = request.nextUrl;
 
   try {
-    if (isProtectedRoute(pathname, homeMiddlewareProtectedRoutes)) {
-      const authResponse = HomeMiddleware(request);
-      if (authResponse.status !== 200) return authResponse;
+    if (isProtectedRoute(pathname, authMiddlewareProtectedRoutes)) {
+      const response = await authMiddleware(request);
+      if (response.status !== 200) return response;
     }
 
-    if (isProtectedRoute(pathname, authMiddlewareProtectedRoutes)) {
-      const authResponse = authMiddleware(request);
-      if (authResponse.status !== 200) return authResponse;
+    if (isProtectedRoute(pathname, homeMiddlewareProtectedRoutes)) {
+      const response = await HomeMiddleware(request);
+      if (response.status !== 200) return response;
     }
     return NextResponse.next();
   } catch (err: unknown) {
     console.error("Error in middleware:", err);
+
+    return NextResponse.redirect(new URL("/error", request.url));
   }
 }
 

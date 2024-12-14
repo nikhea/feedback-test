@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { signUpAction } from "@/app/actions/auth/sginUp.action";
 
 export default function Login() {
@@ -9,16 +9,15 @@ export default function Login() {
 
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  // const router = useRouter();
+  const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const data = await signUpAction({ email, password, username });
-      console.log(data);
-      // if (data.email) {
-      //   router.push("/login");
-      // }
+      if (data.email) {
+        router.push("/login");
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.log(err);
