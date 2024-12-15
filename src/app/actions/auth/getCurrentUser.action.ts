@@ -9,7 +9,6 @@ import { handleAPIResponse, APIResponse } from "@/utils/APIHandleResponse.util";
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_SECRET_BUFFER = new TextEncoder().encode(JWT_SECRET);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getCurrentUser(): Promise<APIResponse> {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token");

@@ -1,28 +1,19 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signUpAction } from "@/app/actions/auth/sginUp.action";
+import { useRegisterUser } from "@/hooks/auth/useRegisterUser";
 
 export default function Login() {
+  const registerMutation = useRegisterUser();
+
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
 
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const router = useRouter();
+  // const [error, setError] = useState("");
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const data = await signUpAction({ email, password, username });
-      if (data.email) {
-        router.push("/login");
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      console.log(err);
-      setError(`${err}`);
-    }
+    registerMutation.mutate({ email, password, username });
   };
 
   return (
@@ -53,7 +44,7 @@ export default function Login() {
 
         <button>register</button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {/* {error && <p style={{ color: "red" }}>{error}</p>} */}
     </div>
   );
 }

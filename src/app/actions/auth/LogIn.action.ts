@@ -57,7 +57,6 @@ export async function loginAction(
       is_deleted: false,
       username: plainUser.username,
     };
-
     return handleAPIResponse(true, 200, "Login successful", responseData);
   } catch (error) {
     console.error("Login error:", error);

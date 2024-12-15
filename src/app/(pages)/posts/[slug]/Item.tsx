@@ -2,9 +2,9 @@
 "use client";
 
 import React, { FC } from "react";
-import { getPostSingle } from "../../../app/actions/fetchPosts";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { getPostSingle } from "@/app/actions/fetchPosts";
 
 const Item: FC<any> = ({ slug }) => {
   const { data, isLoading, isError } = useQuery({

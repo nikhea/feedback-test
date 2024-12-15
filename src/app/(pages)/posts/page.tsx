@@ -1,12 +1,12 @@
 import React from "react";
-import PostItem from "../../components/ui/postItem";
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { getPosts } from "../actions/fetchPosts";
 import Filiter from "./filiter";
+import { getPosts } from "@/app/actions/fetchPosts";
+import PostItem from "@/components/ui/postItem";
 
 const Page = async () => {
   const queryClient = new QueryClient();
