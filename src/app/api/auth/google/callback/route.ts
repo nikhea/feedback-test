@@ -14,6 +14,7 @@ const JWT_SECRET_BUFFER = new TextEncoder().encode(JWT_SECRET);
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
+  // const from = searchParams.get("from") || "/dashboard";
 
   if (!code) {
     return NextResponse.json(
@@ -36,9 +37,10 @@ export async function GET(request: NextRequest) {
       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokens.access_token}`
     );
     const userData = await response.json();
+
     // Connect to database
     await connectDB();
-    // Find or create user
+    // // Find or create user
     let user = await UserModel.findOne({
       $or: [{ email: userData.email }, { googleId: userData.sub }],
     });
@@ -53,15 +55,13 @@ export async function GET(request: NextRequest) {
       });
       await user.save();
     }
+
     // Generate JWT token
     const token = await new SignJWT({ userId: user._id.toString() })
       .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime("1h")
       .sign(JWT_SECRET_BUFFER);
-    // Create response with cookie
-    const newresponse = NextResponse.redirect(
-      new URL("/dashboard", request.url)
-    );
+
     // Set cookie
     const cookieStore = await cookies();
 
@@ -72,7 +72,10 @@ export async function GET(request: NextRequest) {
       maxAge: 3600,
       path: "/",
     });
-    return newresponse;
+
+    // Create response with cookie
+    // return NextResponse.redirect(new URL(from, request.url));
+    return NextResponse.redirect("http://localhost:3000/dashboard");
   } catch (error) {
     console.error("Google OAuth Error:", error);
 

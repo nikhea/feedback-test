@@ -30,6 +30,14 @@ export default function RootLayout({
             <li className="mb-2">
               <Link
                 className="text-white hover:underline"
+                href="/dashboard/register"
+              >
+                register
+              </Link>
+            </li>
+            <li className="mb-2">
+              <Link
+                className="text-white hover:underline"
                 href="/dashboard/setting"
               >
                 setting

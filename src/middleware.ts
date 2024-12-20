@@ -12,6 +12,7 @@ export async function middleware(
   request: NextRequest
 ): Promise<NextResponse | undefined> {
   const { pathname } = request.nextUrl;
+  console.log({ pathname });
 
   try {
     if (isProtectedRoute(pathname, authMiddlewareProtectedRoutes)) {

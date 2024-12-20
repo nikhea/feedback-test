@@ -1,4 +1,5 @@
 "use client";
+import GoogleButton from "@/app/components/googleButton";
 import { useLoginUser } from "@/hooks/auth/useLoginUser";
 import { useState } from "react";
 
@@ -24,6 +25,8 @@ export default function Login() {
   return (
     <div>
       <h1>Login</h1>
+      <GoogleButton />
+
       <input
         type="email"
         placeholder="Email"
